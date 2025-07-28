@@ -1,114 +1,115 @@
 import React, { useState } from "react";
-
-// Icons for different step statuses
-const CompletedIcon = () => (
-  <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-  </svg>
-);
-
-const InProgressIcon = () => (
-  <svg className="w-6 h-6 text-brand-500 animate-spin" fill="none" viewBox="0 0 24 24">
-    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-  </svg>
-);
-
-const PendingIcon = () => (
-  <svg className="w-6 h-6 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-  </svg>
-);
+import { ChevronDownIcon, ChevronUpIcon } from "../../icons";
 
 interface StepProps {
   name: string;
-  status: "completed" | "in-progress" | "pending";
+  description: string;
+  status: "confirmed" | "current" | "disabled";
 }
-
-const StepItem: React.FC<StepProps> = ({ name, status }) => {
-  const getStatusStyles = () => {
-    switch (status) {
-      case "completed":
-        return "text-gray-800 dark:text-gray-200";
-      case "in-progress":
-        return "font-semibold text-brand-500 dark:text-brand-400";
-      default:
-        return "text-gray-400 dark:text-gray-500";
-    }
-  };
-
-  return (
-    <li className="flex items-center gap-4">
-      <div>
-        {status === "completed" && <CompletedIcon />}
-        {status === "in-progress" && <InProgressIcon />}
-        {status === "pending" && <PendingIcon />}
-      </div>
-      <span className={`text-sm ${getStatusStyles()}`}>{name}</span>
-    </li>
-  );
-};
-
 
 interface AnalysisStepsProps {
   completedSteps: Set<string>;
   currentStep: string | null;
-  onRestart: () => void; // Function to call on button click
-  isRestarting: boolean; // Loading state for the button
+  onRestart: () => void;
+  isRestarting: boolean;
 }
 
-export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({ completedSteps, currentStep, onRestart, isRestarting }) => {
-  const [isConfirming, setIsConfirming] = useState(false);
-  const ALL_STEPS = [
-    "Step 1",
-    "Step 2",
-    "Step 3",
-    "Step 4",
-    "Step 5",
-    "Step 6",
-    "Step 7",
-  ];
+export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
+  completedSteps,
+  currentStep,
+  onRestart,
+  isRestarting,
+}) => {
+  const [expandedStep, setExpandedStep] = useState<string | null>(null);
 
-  // Close the dialog if the restart process is finished
-  if (!isRestarting && isConfirming) {
-    setIsConfirming(false);
-  }
+
+  const ALL_STEPS = [
+    { name: "Step 1 - Specify Performance", description: "Here you clarify the entire mission. First, you settle on a single result the business genuinely cares about—something measurable, time-boxed, and tied to strategy. Then you translate that result into one plainly visible behaviour that brings it to life on the front line. When this step is complete, everyone involved can point to the same target and the same action, eliminating guesswork before deeper analysis begins." },
+    { name: "Step 2 - Measure Performance", description: "With the target behaviour named, you now establish reality. Install a simple way to count how often the target behaviour happens now and record a full cycle of data. This baseline becomes the reference point for every improvement claim that follows." },
+    { name: "Step 3 - ABC Analysis", description: "The detective work starts here. You examine real episodes of the behaviour, noting what consistently happens just beforehand, the behaviour itself, and whatever benefit or relief follows seconds later. Collecting these ABC chains—through brief observations or interviews—reveals the real forces sustaining or blocking performance. A clear causal map emerges, ready to guide intervention design." },
+    { name: "Step 4 - Design Feedback", description: "Once causes are understood, attention turns to continuous feedback. Raw counts from Steps 2 and 3 are distilled into a concise display that teammates can grasp at a glance and see on a reliable schedule. Visibility creates self-correction; when progress is obvious, teams adjust on their own." },
+    { name: "Step 5 - Set sub-goals", description: "Immediate, meaningful positives are attached to the desired behaviour, while unnoticed perks that follow the undesired one are quietly removed. Subtle prompts or checklists may also be introduced to make the preferred action the path of least resistance. The aim is to tilt day-to-day contingencies so the preferred action is also the easiest." },
+    { name: "Step 6 - Plan rewards/recognition", description: "Interventions run, data flows, and the feedback display begins to shift—or not. Compare fresh data to the baseline, keep what lifts the line, and adjust quickly when it stalls. Treat every change as a micro-experiment and log the outcome to build a living playbook." },
+    { name: "Step 7 - Sustain & generalise", description: "Finally, the patterns that proved effective are woven into routine workflows, dashboards, and policies so results endure beyond individual champions or team turnover. An explicit owner keeps the system healthy, and the documented playbook is shared so other units can replicate success with minimal ramp-up. Sustainability and transferability mark the true close of the cycle." }
+  ];
 
   const getStatus = (stepName: string): StepProps["status"] => {
     if (completedSteps.has(stepName)) {
-      return "completed";
+      return "confirmed";
     }
     if (currentStep === stepName) {
-      return "in-progress";
+      return "current";
     }
-    return "pending";
+    return "disabled";
   };
 
+  const getStatusDisplay = (status: StepProps["status"]): string => {
+    switch (status) {
+      case "confirmed":
+        return "Confirmed";
+      case "current":
+        return "Current";
+      case "disabled":
+        return "Disabled 🔒";
+      default:
+        return status;
+    }
+  };
+
+  const toggleAccordion = (stepName: string) => {
+    const status = getStatus(stepName);
+    // Don't toggle if step is disabled
+    if (status === "disabled") return;
+    
+    setExpandedStep(expandedStep === stepName ? null : stepName);
+  };
+  
   return (
-    <>
-      <div className="hidden lg:block w-1/3">
-        <div className="bg-white border rounded-lg shadow-theme-lg dark:bg-gray-dark dark:border-gray-800">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-            <h3 className="font-medium text-gray-800 dark:text-white">Analysis Progress</h3>
-          </div>
-          <div className="p-6">
-            <ul className="space-y-5">
-              {ALL_STEPS.map((step) => (
-                <StepItem key={step} name={step} status={getStatus(step)} />
-              ))}
-            </ul>
-          </div>
-          <div className="px-6 pt-4 pb-6 border-t border-gray-200 dark:border-gray-800">
-            <button
-              onClick={onRestart}
-              disabled={isRestarting}
-              className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed"
+    <div className="space-y-3 w-full max-w-2xl">
+      {ALL_STEPS.map((step) => {
+        const status = getStatus(step.name);
+        const isExpanded = expandedStep === step.name;
+        const isDisabled = status === "disabled";
+  
+        return (
+          <div
+            key={step.name}
+            className="border border-gray-200 dark:border-gray-800 rounded-xl p-4 shadow-sm bg-white dark:bg-gray-dark hover:shadow-md transition-all duration-300 ease-in-out w-full"
+          >
+            <div
+              className={`flex justify-between items-center ${!isDisabled ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+              onClick={() => !isDisabled && toggleAccordion(step.name)}
             >
-              {isRestarting ? "Restarting..." : "Restart Analysis"}
-            </button>
+              <div className="flex-1">
+                <div className="font-semibold text-lg text-gray-900 dark:text-white">{step.name}</div>
+                <div className={`text-sm font-medium text-gray-800 dark:text-gray-300`}>
+                  {getStatusDisplay(status)}
+                </div>
+              </div>
+              {!isDisabled && (
+                <div className="ml-4">
+                  <div className={`transform transition-transform duration-300 ease-in-out ${isExpanded ? 'rotate-180' : 'rotate-0'}`}>
+                    <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+              )}
+            </div>
+            {!isDisabled && (
+              <div 
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                  isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="mt-4 pt-3 border-t border-gray-100">
+                  <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {step.description}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      </div>
-    </>
+        );
+      })}
+    </div>
   );
 };

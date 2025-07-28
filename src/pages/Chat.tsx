@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, FormEvent, useCallback } from "react";
 import PageMeta from "../components/common/PageMeta";
-import { ArrowRightIcon, BotAvatarIcon } from "../icons";
+import { ArrowRightIcon, ArrowUpIcon, BotAvatarIcon, PlusIcon } from "../icons";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import { abcService } from "../services/abc";
 import { AnalysisSteps } from "../components/chat/AnalysisSteps";
@@ -23,8 +23,8 @@ export default function Chat() {
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
   const [currentStep, setCurrentStep] = useState<string | null>(null);
   const [isRestarting, setIsRestarting] = useState(false);
-  const [isConfirmingRestart, setIsConfirmingRestart] = useState(false); 
-  
+  const [isConfirmingRestart, setIsConfirmingRestart] = useState(false);
+
   // Use state for analysisId, initialized to null
   const [analysisId, setAnalysisId] = useState<number | null>(null);
 
@@ -64,7 +64,7 @@ export default function Chat() {
       const response = await abcService.getAnalysisConversations(analysisId);
       if (response.ok) {
         const conversations = response.data.sort((a, b) => new Date(Number(a.ts)).getTime() - new Date(Number(b.ts)).getTime());
-        
+
         const apiMessages = conversations.map((conv): Message => ({
           id: conv.id,
           text: conv.text,
@@ -78,16 +78,16 @@ export default function Chat() {
         setMessages(apiMessages);
 
         const orderedUniqueSteps = conversations.reduce((acc, curr) => {
-            if (curr.stepName && !acc.includes(curr.stepName)) {
-                acc.push(curr.stepName);
-            }
-            return acc;
+          if (curr.stepName && !acc.includes(curr.stepName)) {
+            acc.push(curr.stepName);
+          }
+          return acc;
         }, [] as string[]);
 
         if (orderedUniqueSteps.length > 0) {
-            const lastStep = orderedUniqueSteps.pop()!;
-            setCurrentStep(lastStep);
-            setCompletedSteps(new Set(orderedUniqueSteps));
+          const lastStep = orderedUniqueSteps.pop()!;
+          setCurrentStep(lastStep);
+          setCompletedSteps(new Set(orderedUniqueSteps));
         }
       }
     } catch (error) {
@@ -151,7 +151,7 @@ export default function Chat() {
       setIsConfirmingRestart(false); // Close the dialog after the action is complete
     }
   };
-  
+
   return (
     <>
       <PageMeta title="Chat | Reinforcer Admin Dashboard Template" description="Chat with the bot in this demo application." />
@@ -166,21 +166,17 @@ export default function Chat() {
             <div className="flex-1 p-6 overflow-y-auto">
               <div className="flex flex-col gap-5">
                 {messages.map((message, index) => (
-                  <div key={message.id} className={`flex items-end gap-3 ${message.sender === "user" ? "justify-end" : ""}`}>
-                    {message.sender === "assistant" && <BotAvatarIcon className="flex-shrink-0 size-8" />}
-                    
-                    <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
-                      message.isConfirmation 
-                        ? "bg-brand-50 dark:bg-brand-500/10 border-l-4 border-brand-500" 
-                        : message.sender === "user" 
-                          ? "bg-brand-500 text-white rounded-br-none" 
-                          : "bg-gray-100 text-gray-800 dark:bg-white/5 dark:text-gray-300 rounded-bl-none"
-                    }`}>
-                      <p className={`text-sm ${message.isConfirmation ? "text-gray-800 dark:text-gray-200" : ""}`}>{message.isConfirmation ? `⚠️ `: ''}{message.text}</p>
-                      <p className={`text-xs mt-1.5 ${message.sender === 'user' ? 'text-gray-200' : 'text-gray-500 dark:text-gray-400'} text-right`}>
-                        {message.timestamp}
-                      </p>
-                      
+                  <div key={message.id} className={`flex items-end gap-3 ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
+                    {message.sender === "assistant" && <BotAvatarIcon />}
+
+                    <div className={`max-w-xs lg:max-w-md px-6 py-3 rounded-full ${message.isConfirmation
+                      ? "bg-brand-50 dark:bg-brand-500/10 border-l-4 border-brand-500"
+                      : message.sender === "user"
+                        ? "bg-brand-500 text-white"
+                        : "bg-gray-100 text-gray-800 dark:bg-white/5 dark:text-gray-300"
+                      }`}>
+                      <p className={`text-sm ${message.isConfirmation ? "text-gray-800 dark:text-gray-200" : ""}`}>{message.isConfirmation ? `⚠️ ` : ''}{message.text}</p>
+
                       {message.isConfirmation && index === messages.length - 1 && (
                         <div className="flex gap-3 mt-4">
                           <button
@@ -206,22 +202,35 @@ export default function Chat() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800">
-              <form onSubmit={handleFormSubmit} className="flex items-center gap-4">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder={!analysisId ? "Loading analysis..." : "Type your message..."}
-                  className="w-full px-4 py-2 text-gray-700 bg-transparent border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 dark:text-gray-300 dark:border-gray-700"
-                  disabled={isSending || !analysisId}
-                />
-                <button
-                  type="submit"
-                  className="inline-flex items-center justify-center p-2 text-white rounded-full bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50"
-                  disabled={!input.trim() || isSending || !analysisId}
-                >
-                  <ArrowRightIcon />
-                </button>
+              <form onSubmit={handleFormSubmit} className="relative">
+                <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-2">
+                  {/* Plus icon button on the left */}
+                  <button
+                    type="button"
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 mr-3"
+                  >
+                    <PlusIcon />
+                  </button>
+
+                  {/* Input field */}
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder={!analysisId ? "Loading analysis..." : "Type your message..."}
+                    className="flex-1 bg-transparent border-none outline-none text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400"
+                    disabled={isSending || !analysisId}
+                  />
+
+                  {/* Send button on the right */}
+                  <button
+                    type="submit"
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-50 transition-colors duration-200 ml-3"
+                    disabled={!input.trim() || isSending || !analysisId}
+                  >
+                    <ArrowUpIcon />
+                  </button>
+                </div>
               </form>
             </div>
           </div>
