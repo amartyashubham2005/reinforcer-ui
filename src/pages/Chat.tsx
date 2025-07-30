@@ -18,7 +18,7 @@ interface Message {
 }
 
 export default function Chat() {
-  const { user, logout, isLoading } = useAuth(); // Use the auth context
+  const { user } = useAuth(); // Use the auth context
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
