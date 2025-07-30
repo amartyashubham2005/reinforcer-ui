@@ -6,6 +6,7 @@ import { abcService } from "../services/abc";
 import { AnalysisSteps } from "../components/chat/AnalysisSteps";
 import toast from "react-hot-toast";
 import { ConfirmationDialog } from "../components/common/ConfirmationDialog";
+import { useAuth } from "../context/AuthContext";
 
 // Updated Message interface
 interface Message {
@@ -17,6 +18,7 @@ interface Message {
 }
 
 export default function Chat() {
+  const { user, logout, isLoading } = useAuth(); // Use the auth context
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -157,14 +159,16 @@ export default function Chat() {
       <PageMeta title="Chat | Reinforcer Admin Dashboard Template" description="Chat with the bot in this demo application." />
 
       <div className="mx-auto max-w-7xl">
-        <PageBreadcrumb pageTitle="Chat" />
+        <PageBreadcrumb pageTitle={`Hi ${user?.full_name || "there"}!`} />
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="w-full lg:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-white border rounded-lg shadow-theme-lg dark:bg-gray-dark dark:border-gray-800">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-              <h3 className="font-medium text-gray-800 dark:text-white">Chat with Bot</h3>
+              <h3 className="font-medium text-gray-800 dark:text-white">
+                {analysisId && messages && messages.length <=1 ? "Let’s kick off your ABC analysis" : "Let’s continue where you left off"}
+              </h3>
             </div>
             <div className="flex-1 p-6 overflow-y-auto">
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-5 chat-container">
                 {messages.map((message, index) => (
                   <div key={message.id} className={`flex items-end gap-3 ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
                     {message.sender === "assistant" && <BotAvatarIcon />}

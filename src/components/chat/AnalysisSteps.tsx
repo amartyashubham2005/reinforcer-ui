@@ -17,6 +17,8 @@ interface AnalysisStepsProps {
 export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
   completedSteps,
   currentStep,
+  onRestart,
+  isRestarting,
 }) => {
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
 
@@ -108,6 +110,16 @@ export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
           </div>
         );
       })}
+      {/* Restart Button */}
+    <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <button
+        onClick={onRestart}
+        disabled={isRestarting}
+        className="w-full px-4 py-3 bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white font-medium rounded-xl transition-colors duration-200 disabled:cursor-not-allowed"
+      >
+        {isRestarting ? "Restarting Analysis..." : "🔄 Restart Analysis"}
+      </button>
+    </div>
     </div>
   );
 };
