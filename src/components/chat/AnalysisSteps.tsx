@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "../../icons";
+import { ChevronDownIcon } from "../../icons";
 
 interface StepProps {
   name: string;
@@ -17,8 +17,6 @@ interface AnalysisStepsProps {
 export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
   completedSteps,
   currentStep,
-  onRestart,
-  isRestarting,
 }) => {
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 
 import { authService } from "../../services/auth";
@@ -10,7 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function UserDropdown() {
   const { user, logout, isLoading } = useAuth(); // Use the auth context
   const [isOpen, setIsOpen] = useState(false);
-  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [_isSigningOut, setIsSigningOut] = useState(false);
   const navigate = useNavigate();
 
   function toggleDropdown() {

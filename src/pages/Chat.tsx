@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, FormEvent, useCallback } from "react";
 import PageMeta from "../components/common/PageMeta";
-import { ArrowRightIcon, ArrowUpIcon, BotAvatarIcon, PlusIcon } from "../icons";
+import { ArrowUpIcon, BotAvatarIcon, PlusIcon } from "../icons";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import { abcService } from "../services/abc";
 import { AnalysisSteps } from "../components/chat/AnalysisSteps";
