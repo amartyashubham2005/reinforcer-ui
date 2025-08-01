@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronDownIcon } from "../../icons";
 
 interface StepProps {
@@ -43,14 +43,24 @@ export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
     return "disabled";
   };
 
-  const getStatusDisplay = (status: StepProps["status"]): string => {
+  const getStatusDisplay = (status: StepProps["status"]): React.ReactNode => {
     switch (status) {
       case "confirmed":
         return "Confirmed";
       case "current":
         return "Current";
       case "disabled":
-        return "Disabled 🔒";
+        return (
+          <span className="flex items-center space-x-1">
+            <img
+              src={document.documentElement.classList.contains('dark') ? '/images/icons/lock-dark.svg' : '/images/icons/lock.svg'}
+              alt="Lock Icon"
+              className="h-4 w-4"
+            />
+            <span>Disabled</span>
+          </span>
+        );
+
       default:
         return status;
     }
@@ -63,6 +73,13 @@ export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
     
     setExpandedStep(expandedStep === stepName ? null : stepName);
   };
+
+  useEffect(() => {
+    // Reset expanded step when currentStep changes
+    if (currentStep) {
+      setExpandedStep(currentStep);
+    }
+  }, [currentStep]);
   
   return (
     <div className="space-y-3 w-full max-w-2xl">
