@@ -15,16 +15,16 @@ export default function AuthLayout({
           <div className="relative flex items-center justify-center z-1">
             {/* <!-- ===== Common Grid Shape Start ===== --> */}
             <GridShape />
-            <div className="flex flex-col items-center">
+            {/* <div className="flex flex-col items-center"> */}
               <img
-                className="w-full h-auto object-cover"
+                className="w-full h-full object-cover"
                 src="/images/logo/Reinforcer-log-in-page.png"
                 alt="Logo"
               />
               {/* <p className="text-center text-gray-400 dark:text-white/60">
                 LLM-Powered OBM ABC Analysis Tool
               </p> */}
-            </div>
+            {/* </div> */}
           </div>
         </div>
         <div className="fixed z-50 hidden bottom-6 right-6 sm:block">
