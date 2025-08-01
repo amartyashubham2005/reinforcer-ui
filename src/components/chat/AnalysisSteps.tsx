@@ -99,7 +99,7 @@ export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
             >
               <div className="flex-1">
                 <div className="font-semibold text-lg text-gray-900 dark:text-white">{step.name}</div>
-                <div className={`text-sm font-medium text-gray-800 dark:text-gray-300`}>
+                <div className={`text-sm font-medium text-gray-400 dark:text-gray-500`}>
                   {getStatusDisplay(status)}
                 </div>
               </div>
