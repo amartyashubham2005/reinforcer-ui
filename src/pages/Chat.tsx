@@ -32,12 +32,12 @@ export default function Chat() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // const scrollToBottom = () => {
+  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // };
 
   useEffect(() => {
-    scrollToBottom();
+    // scrollToBottom();
   }, [messages]);
 
   // Effect to fetch the latest active analysis ID on component mount
@@ -159,14 +159,17 @@ export default function Chat() {
       <PageMeta title="Chat | Reinforcer Admin Dashboard Template" description="Chat with the bot in this demo application." />
 
       <div className="mx-auto max-w-7xl">
-        <PageBreadcrumb pageTitle={`Hi ${user?.full_name || "there"}!`} />
+        <PageBreadcrumb pageTitle={`Hi ${user?.full_name.split(' ')[0] || "there"}`} />
+        <div className="text-gray-600 dark:text-white mb-6">
+          {analysisId && messages && messages.length <=1 ? "Let’s kick off your ABC analysis" : "Let’s continue where you left off"} 
+        </div>
         <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-white border rounded-lg shadow-theme-lg dark:bg-gray-dark dark:border-gray-800">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+          <div className="w-full lg:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-white rounded-lg shadow-theme-lg dark:bg-gray-900">
+            {/* <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
               <h3 className="font-medium text-gray-800 dark:text-white">
                 {analysisId && messages && messages.length <=1 ? "Let’s kick off your ABC analysis" : "Let’s continue where you left off"}
               </h3>
-            </div>
+            </div> */}
             <div className="flex-1 p-6 overflow-y-auto">
               <div className="flex flex-col gap-5 chat-container">
                 {messages.map((message, index) => (
