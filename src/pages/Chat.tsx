@@ -160,11 +160,11 @@ export default function Chat() {
 
       <div className="mx-auto max-w-7xl">
         <PageBreadcrumb pageTitle={`Hi ${user?.full_name.split(' ')[0] || "there"}`} />
-        <div className="text-gray-600 dark:text-white mb-6">
+        <div className="text-2xl text-gray-600 dark:text-gray-300 mb-6">
           {analysisId && messages && messages.length <=1 ? "Let’s kick off your ABC analysis" : "Let’s continue where you left off"} 
         </div>
         <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-white rounded-lg shadow-theme-lg dark:bg-gray-900">
+          <div className="w-full lg:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-gray rounded-lg dark:bg-gray-900">
             {/* <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
               <h3 className="font-medium text-gray-800 dark:text-white">
                 {analysisId && messages && messages.length <=1 ? "Let’s kick off your ABC analysis" : "Let’s continue where you left off"}
@@ -176,11 +176,11 @@ export default function Chat() {
                   <div key={message.id} className={`flex items-end gap-3 ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
                     {message.sender === "assistant" && <BotAvatarIcon />}
 
-                    <div className={`max-w-xs lg:max-w-md px-6 py-3 rounded-full ${message.isConfirmation
+                    <div className={`max-w-xs lg:max-w-md px-6 py-3 rounded-xl ${message.isConfirmation
                       ? "bg-brand-50 dark:bg-brand-500/10 border-l-4 border-brand-500"
                       : message.sender === "user"
                         ? "bg-brand-500 text-white"
-                        : "bg-gray-100 text-gray-800 dark:bg-white/5 dark:text-gray-300"
+                        : "bg-white text-gray-800 dark:bg-white/5 dark:text-gray-300"
                       }`}>
                       <p className={`text-sm ${message.isConfirmation ? "text-gray-800 dark:text-gray-200" : ""}`}>{message.isConfirmation ? `⚠️ ` : ''}{message.text}</p>
 
@@ -208,7 +208,7 @@ export default function Chat() {
                 <div ref={messagesEndRef} />
               </div>
             </div>
-            <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800">
+            <div className="px-6 py-4 border-gray-200 dark:border-gray-800">
               <form onSubmit={handleFormSubmit} className="relative">
                 <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-2">
                   {/* Plus icon button on the left */}
