@@ -173,7 +173,7 @@ export default function Chat() {
           {analysisId && messages && messages.length <=1 ? "Let’s kick off your ABC analysis" : "Let’s continue where you left off"} 
         </div>
         <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-gray rounded-lg dark:bg-gray-900">
+          <div className="w-full lg:w-3/5 xl:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-gray rounded-lg dark:bg-gray-900">
             <div className="flex-1 p-6 overflow-y-auto">
               <div className="flex flex-col gap-5 chat-container">
                 {messages.map((message, index) => (
@@ -251,12 +251,14 @@ export default function Chat() {
               </form>
             </div>
           </div>
-          <AnalysisSteps
-            completedSteps={completedSteps}
-            currentStep={currentStep}
-            onRestart={() => setIsConfirmingRestart(true)}
-            isRestarting={isRestarting}
-          />
+          <div className="w-full lg:w-2/5 xl:w-1/3">
+            <AnalysisSteps
+              completedSteps={completedSteps}
+              currentStep={currentStep}
+              onRestart={() => setIsConfirmingRestart(true)}
+              isRestarting={isRestarting}
+            />
+          </div>
         </div>
       </div>
       <ConfirmationDialog
