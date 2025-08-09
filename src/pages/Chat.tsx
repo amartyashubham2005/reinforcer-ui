@@ -33,10 +33,25 @@ export default function Chat() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const autoResizeTextarea = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      const scrollHeight = textarea.scrollHeight;
+      const maxHeight = 20 * 24; // 20 lines * 24px line height
+      textarea.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+    }
+  };
+
+  useEffect(() => {
+    autoResizeTextarea();
+  }, [input]);
 
   useEffect(() => {
     if (shouldScrollToBottom || isInitialLoad) {
@@ -220,29 +235,40 @@ export default function Chat() {
             </div>
             <div className="px-6 py-4 border-gray-200 dark:border-gray-800">
               <form onSubmit={handleFormSubmit} className="relative">
-                <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-full px-2 py-2">
+                <div className="flex items-end bg-gray-100 dark:bg-gray-800 rounded-xl px-2 py-2">
                   {/* Plus icon button on the left */}
                   <button
                     type="button"
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 mr-3"
+                    className="flex items-center justify-center w-6 h-6 rounded-xl bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 mr-3 mb-1 flex-shrink-0"
                   >
                     <PlusIcon />
                   </button>
 
                   {/* Input field */}
-                  <input
-                    type="text"
+                  <textarea
+                    ref={textareaRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder={!analysisId ? "Loading analysis..." : "Type your message..."}
-                    className="flex-1 bg-transparent border-none outline-none text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleFormSubmit(e as any);
+                      }
+                    }}
+                    placeholder={!analysisId ? "Loading analysis..." : "Type your message... (Press Enter to send, Shift+Enter for new line)"}
+                    className="flex-1 bg-transparent border-none outline-none text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400 resize-none overflow-hidden leading-6 py-1"
+                    style={{ 
+                      minHeight: '24px',
+                      maxHeight: '480px' // 20 lines * 24px
+                    }}
+                    rows={1}
                     disabled={isSending || !analysisId}
                   />
 
                   {/* Send button on the right */}
                   <button
                     type="submit"
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-50 transition-colors duration-200 ml-3"
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-50 transition-colors duration-200 ml-3 mb-1 flex-shrink-0"
                     disabled={!input.trim() || isSending || !analysisId}
                   >
                     <ArrowUpIcon />
