@@ -165,11 +165,6 @@ export default function Chat() {
         </div>
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="w-full lg:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-gray rounded-lg dark:bg-gray-900">
-            {/* <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-              <h3 className="font-medium text-gray-800 dark:text-white">
-                {analysisId && messages && messages.length <=1 ? "Let’s kick off your ABC analysis" : "Let’s continue where you left off"}
-              </h3>
-            </div> */}
             <div className="flex-1 p-6 overflow-y-auto">
               <div className="flex flex-col gap-5 chat-container">
                 {messages.map((message, index) => (
