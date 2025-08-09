@@ -189,7 +189,7 @@ export default function Chat() {
         </div>
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="w-full lg:w-3/5 xl:w-2/3 flex flex-col h-[calc(100vh-180px)] bg-gray rounded-lg dark:bg-gray-900">
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-6 overflow-y-auto chat-scroll">
               <div className="flex flex-col gap-5 chat-container">
                 {messages.map((message, index) => (
                   <div key={message.id} className={`flex items-end gap-3 ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
