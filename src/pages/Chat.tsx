@@ -29,16 +29,24 @@ export default function Chat() {
 
   // Use state for analysisId, initialized to null
   const [analysisId, setAnalysisId] = useState<number | null>(null);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // };
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    // scrollToBottom();
-  }, [messages]);
+    if (shouldScrollToBottom || isInitialLoad) {
+      scrollToBottom();
+      setShouldScrollToBottom(false);
+      if (isInitialLoad && messages.length > 0) {
+        setIsInitialLoad(false);
+      }
+    }
+  }, [messages, shouldScrollToBottom, isInitialLoad]);
 
   // Effect to fetch the latest active analysis ID on component mount
   useEffect(() => {
@@ -112,6 +120,7 @@ export default function Chat() {
     if (!messageText.trim() || isSending || !analysisId) return;
 
     setIsSending(true);
+    setShouldScrollToBottom(true); // Scroll to bottom when user sends a message
     try {
       await abcService.createAnalysisConversation(analysisId, { text: messageText });
       await fetchMessages();
@@ -182,14 +191,20 @@ export default function Chat() {
                       {message.isConfirmation && index === messages.length - 1 && (
                         <div className="flex gap-3 mt-4">
                           <button
-                            onClick={() => sendMessage("Yes")}
+                            onClick={() => {
+                              setShouldScrollToBottom(true);
+                              sendMessage("Yes");
+                            }}
                             disabled={isSending || !analysisId}
                             className="px-4 py-1 text-sm font-medium text-white transition bg-green-500 rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             Yes
                           </button>
                           <button
-                            onClick={() => sendMessage("No")}
+                            onClick={() => {
+                              setShouldScrollToBottom(true);
+                              sendMessage("No");
+                            }}
                             disabled={isSending || !analysisId}
                             className="px-4 py-1 text-sm font-medium text-white transition bg-red-500 rounded-md hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
