@@ -22,15 +22,31 @@ export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
 }) => {
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
 
+  // Load expanded state from localStorage on mount
+  useEffect(() => {
+    const savedExpandedStep = localStorage.getItem('expandedAnalysisStep');
+    if (savedExpandedStep) {
+      setExpandedStep(savedExpandedStep);
+    }
+  }, []);
+
+  // Save expanded state to localStorage whenever it changes
+  useEffect(() => {
+    if (expandedStep) {
+      localStorage.setItem('expandedAnalysisStep', expandedStep);
+    } else {
+      localStorage.removeItem('expandedAnalysisStep');
+    }
+  }, [expandedStep]);
 
   const ALL_STEPS = [
-    { name: "Step 1 - Specify Performance", description: "Here you clarify the entire mission. First, you settle on a single result the business genuinely cares about—something measurable, time-boxed, and tied to strategy. Then you translate that result into one plainly visible behaviour that brings it to life on the front line. When this step is complete, everyone involved can point to the same target and the same action, eliminating guesswork before deeper analysis begins." },
-    { name: "Step 2 - Measure Performance", description: "With the target behaviour named, you now establish reality. Install a simple way to count how often the target behaviour happens now and record a full cycle of data. This baseline becomes the reference point for every improvement claim that follows." },
-    { name: "Step 3 - ABC Analysis", description: "The detective work starts here. You examine real episodes of the behaviour, noting what consistently happens just beforehand, the behaviour itself, and whatever benefit or relief follows seconds later. Collecting these ABC chains—through brief observations or interviews—reveals the real forces sustaining or blocking performance. A clear causal map emerges, ready to guide intervention design." },
-    { name: "Step 4 - Design Feedback", description: "Once causes are understood, attention turns to continuous feedback. Raw counts from Steps 2 and 3 are distilled into a concise display that teammates can grasp at a glance and see on a reliable schedule. Visibility creates self-correction; when progress is obvious, teams adjust on their own." },
-    { name: "Step 5 - Set sub-goals", description: "Immediate, meaningful positives are attached to the desired behaviour, while unnoticed perks that follow the undesired one are quietly removed. Subtle prompts or checklists may also be introduced to make the preferred action the path of least resistance. The aim is to tilt day-to-day contingencies so the preferred action is also the easiest." },
-    { name: "Step 6 - Plan rewards/recognition", description: "Interventions run, data flows, and the feedback display begins to shift—or not. Compare fresh data to the baseline, keep what lifts the line, and adjust quickly when it stalls. Treat every change as a micro-experiment and log the outcome to build a living playbook." },
-    { name: "Step 7 - Sustain & generalise", description: "Finally, the patterns that proved effective are woven into routine workflows, dashboards, and policies so results endure beyond individual champions or team turnover. An explicit owner keeps the system healthy, and the documented playbook is shared so other units can replicate success with minimal ramp-up. Sustainability and transferability mark the true close of the cycle." }
+    { name: "Step 1", description: "Here you clarify the entire mission. First, you settle on a single result the business genuinely cares about—something measurable, time-boxed, and tied to strategy. Then you translate that result into one plainly visible behaviour that brings it to life on the front line. When this step is complete, everyone involved can point to the same target and the same action, eliminating guesswork before deeper analysis begins." },
+    { name: "Step 2", description: "With the target behaviour named, you now establish reality. Install a simple way to count how often the target behaviour happens now and record a full cycle of data. This baseline becomes the reference point for every improvement claim that follows." },
+    { name: "Step 3", description: "The detective work starts here. You examine real episodes of the behaviour, noting what consistently happens just beforehand, the behaviour itself, and whatever benefit or relief follows seconds later. Collecting these ABC chains—through brief observations or interviews—reveals the real forces sustaining or blocking performance. A clear causal map emerges, ready to guide intervention design." },
+    { name: "Step 4", description: "Once causes are understood, attention turns to continuous feedback. Raw counts from Steps 2 and 3 are distilled into a concise display that teammates can grasp at a glance and see on a reliable schedule. Visibility creates self-correction; when progress is obvious, teams adjust on their own." },
+    { name: "Step 5", description: "Immediate, meaningful positives are attached to the desired behaviour, while unnoticed perks that follow the undesired one are quietly removed. Subtle prompts or checklists may also be introduced to make the preferred action the path of least resistance. The aim is to tilt day-to-day contingencies so the preferred action is also the easiest." },
+    { name: "Step 6", description: "Interventions run, data flows, and the feedback display begins to shift—or not. Compare fresh data to the baseline, keep what lifts the line, and adjust quickly when it stalls. Treat every change as a micro-experiment and log the outcome to build a living playbook." },
+    { name: "Step 7", description: "Finally, the patterns that proved effective are woven into routine workflows, dashboards, and policies so results endure beyond individual champions or team turnover. An explicit owner keeps the system healthy, and the documented playbook is shared so other units can replicate success with minimal ramp-up. Sustainability and transferability mark the true close of the cycle." }
   ];
 
   const getStatus = (stepName: string): StepProps["status"] => {
@@ -75,11 +91,11 @@ export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
   };
 
   useEffect(() => {
-    // Reset expanded step when currentStep changes
-    if (currentStep) {
+    // Auto-expand current step if no step is currently expanded or if current step changed
+    if (currentStep && (!expandedStep || currentStep !== expandedStep)) {
       setExpandedStep(currentStep);
     }
-  }, [currentStep]);
+  }, [currentStep, expandedStep]);
   
   return (
     <div className="space-y-3 w-full max-w-2xl">
