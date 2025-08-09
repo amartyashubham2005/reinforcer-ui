@@ -30,7 +30,10 @@ interface CreateAnalysisConversationRequestData {
   text: string; // The text of the conversation
 }
 
-
+interface GetAllStepsResponseData {
+  name: string;
+  description: string;
+}
 
 export const abcService = {
   async createAnalysis(createAnalysisRequestData: CreateAnalysisRequestData) {
@@ -55,5 +58,9 @@ export const abcService = {
 
   async createAnalysisConversation(analysisId: number, conversationData: CreateAnalysisConversationRequestData) {
     return api.post<GetAnalysisConversationResponseData>(`/api/v1/abc/analysis/${analysisId}/conversations`, conversationData);
+  },
+
+  async getAllSteps() {
+    return api.get<GetAllStepsResponseData[]>("/api/v1/abc/all-steps");
   }
 };
