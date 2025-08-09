@@ -114,7 +114,7 @@ export const AnalysisSteps: React.FC<AnalysisStepsProps> = ({
               onClick={() => !isDisabled && toggleAccordion(step.name)}
             >
               <div className="flex-1">
-                <div className="font-semibold text-lg text-gray-900 dark:text-white">{step.name}</div>
+                <div className="font-semibold text-sm text-gray-900 dark:text-white">{step.name}</div>
                 <div className={`text-sm font-medium text-gray-400 dark:text-gray-500`}>
                   {getStatusDisplay(status)}
                 </div>
